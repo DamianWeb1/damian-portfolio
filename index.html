@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en" style="background:#0a0a0a;">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#0a0a0a"/>
+<title>Damian — Content Creator & Community Manager</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;700;800&family=DM+Sans:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --black: #0a0a0a;
+    --gold: #f5c518;
+    --gold-light: #ffe566;
+    --gold-dim: #c9a112;
+    --white: #f0f0f0;
+    --gray: #1a1a1a;
+    --gray2: #2a2a2a;
+    --text-muted: #888;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; background: #0a0a0a; }
+  body { background: #0a0a0a; color: #f0f0f0; font-family: 'DM Sans', sans-serif; overflow-x: hidden; cursor: none; }
+
+  .cursor { position: fixed; width: 12px; height: 12px; background: var(--gold); border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); }
+  .cursor-follower { position: fixed; width: 36px; height: 36px; border: 1.5px solid var(--gold); border-radius: 50%; pointer-events: none; z-index: 9998; transform: translate(-50%,-50%); opacity: 0.5; transition: left 0.12s ease, top 0.12s ease; }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 3rem; z-index: 200; background: linear-gradient(to bottom, rgba(10,10,10,0.97), transparent); }
+  .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; color: var(--gold); letter-spacing: 2px; text-decoration: none; position: relative; z-index: 201; }
+  .nav-logo::after { content: '✦'; font-size: 0.6rem; position: absolute; top: 6px; right: -12px; color: var(--gold); }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a { color: #f0f0f0; text-decoration: none; font-size: 0.85rem; letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.7; transition: opacity 0.2s, color 0.2s; }
+  .nav-links a:hover { opacity: 1; color: var(--gold); }
+
+  .nav-menu { display: none; flex-direction: column; align-items: flex-end; position: relative; z-index: 201; }
+  .hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
+  .hamburger span { display: block; width: 26px; height: 2px; background: #f0f0f0; transition: transform 0.3s ease, opacity 0.3s ease, background 0.2s; border-radius: 2px; }
+  .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); background: var(--gold); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); background: var(--gold); }
+  .mobile-nav { display: flex; flex-direction: column; align-items: flex-end; gap: 0; margin-top: 0.8rem; overflow: hidden; max-height: 0; transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease; opacity: 0; pointer-events: none; }
+  .mobile-nav.open { max-height: 400px; opacity: 1; pointer-events: all; }
+  .mobile-nav a { display: flex; align-items: center; gap: 0.6rem; color: rgba(240,240,240,0.6); text-decoration: none; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; padding: 0.5rem 0; transition: color 0.2s; text-align: right; }
+  .mobile-nav a:hover { color: var(--gold); }
+  .mobile-nav a .num { font-family: 'Bebas Neue', sans-serif; font-size: 0.65rem; color: var(--gold); opacity: 0.5; letter-spacing: 1px; }
+  .mobile-nav a:hover .num { opacity: 1; }
+  .mobile-nav a .line { width: 20px; height: 1px; background: rgba(245,197,24,0.3); transition: background 0.2s, width 0.2s; }
+  .mobile-nav a:hover .line { background: var(--gold); width: 30px; }
+
+  #hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 0 3rem; position: relative; overflow: hidden; background: #0a0a0a; }
+  .hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse 80% 60% at 60% 40%, rgba(245,197,24,0.07) 0%, transparent 70%); pointer-events: none; }
+  .hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(245,197,24,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(245,197,24,0.04) 1px, transparent 1px); background-size: 60px 60px; pointer-events: none; }
+  .hero-tag { font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 1.5rem; opacity: 0; animation: fadeUp 0.8s 0.3s forwards; }
+  .hero-headline { font-family: 'Bebas Neue', sans-serif; font-size: clamp(4rem, 10vw, 10rem); line-height: 0.92; letter-spacing: 2px; color: #f0f0f0; opacity: 0; animation: fadeUp 0.9s 0.5s forwards; }
+  .hero-headline .gold { color: var(--gold); }
+  .hero-sub { font-size: clamp(1rem, 2vw, 1.25rem); font-style: italic; color: #f0f0f0; opacity: 0; max-width: 560px; margin-top: 1.5rem; line-height: 1.6; animation: fadeUp 0.9s 0.7s forwards; }
+  .hero-sub .highlight { color: var(--gold); font-style: normal; font-weight: 700; }
+  .hero-cta-row { display: flex; gap: 1.2rem; align-items: center; margin-top: 2.5rem; opacity: 0; animation: fadeUp 0.9s 0.9s forwards; flex-wrap: wrap; }
+  .btn-gold { background: var(--gold); color: #0a0a0a; padding: 0.85rem 2.2rem; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.85rem; letter-spacing: 1.5px; text-transform: uppercase; text-decoration: none; border: none; cursor: pointer; transition: background 0.2s, transform 0.2s; clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px)); display: inline-block; }
+  .btn-gold:hover { background: var(--gold-light); transform: translateY(-2px); }
+  .btn-outline { border: 1.5px solid rgba(245,197,24,0.4); color: #f0f0f0; padding: 0.85rem 2.2rem; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.85rem; letter-spacing: 1.5px; text-transform: uppercase; text-decoration: none; transition: border-color 0.2s, color 0.2s; clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px)); display: inline-block; }
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+  .hero-scroll { position: absolute; bottom: 2.5rem; left: 3rem; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); display: flex; align-items: center; gap: 0.8rem; opacity: 0; animation: fadeUp 1s 1.2s forwards; }
+  .hero-scroll::before { content: ''; display: block; width: 40px; height: 1px; background: var(--text-muted); }
+
+  .coin { position: absolute; font-size: 2rem; animation: fly 8s linear infinite; pointer-events: none; user-select: none; filter: drop-shadow(0 0 8px rgba(245,197,24,0.5)); }
+  .coin:nth-child(1) { top: 20%; animation-delay: 0s; font-size: 1.4rem; }
+  .coin:nth-child(2) { top: 55%; animation-delay: -3s; font-size: 2.2rem; }
+  .coin:nth-child(3) { top: 75%; animation-delay: -6s; font-size: 1rem; }
+  @keyframes fly { from { left: -80px; opacity: 0; } 5% { opacity: 1; } 95% { opacity: 1; } to { left: calc(100vw + 80px); opacity: 0; } }
+
+  .marquee-wrap { overflow: hidden; background: var(--gold); padding: 0.9rem 0; display: flex; }
+  .marquee-track { display: flex; animation: marquee 20s linear infinite; white-space: nowrap; }
+  .marquee-item { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 3px; color: #0a0a0a; padding: 0 2rem; flex-shrink: 0; }
+  .marquee-item span { color: rgba(0,0,0,0.35); }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  section { padding: 7rem 3rem; background: #0a0a0a; }
+  .section-label { font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; }
+  .section-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3rem, 6vw, 5.5rem); line-height: 1; margin-bottom: 2rem; color: #f0f0f0; }
+
+  #about { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+  .about-visual { position: relative; height: 500px; }
+  .about-card { position: absolute; border-radius: 2px; }
+  .about-card-main { width: 85%; top: 0; left: 0; height: 380px; background: #2a2a2a; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .avatar-placeholder { width: 100%; height: 100%; background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%); display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 8rem; color: var(--gold); opacity: 0.3; }
+  .about-card-stat { bottom: 0; right: 0; width: 180px; text-align: center; background: var(--gold); color: #0a0a0a; padding: 2rem; }
+  .about-card-stat .big { font-family: 'Bebas Neue', sans-serif; font-size: 3.5rem; line-height: 1; }
+  .about-card-stat .small { font-size: 0.75rem; letter-spacing: 1px; text-transform: uppercase; font-weight: 700; }
+  .about-text p { color: rgba(240,240,240,0.65); line-height: 1.8; margin-bottom: 1.5rem; font-size: 1rem; }
+  .bio-text { font-style: italic; color: rgba(240,240,240,0.85) !important; border-left: 2px solid var(--gold); padding-left: 1rem; }
+  .skills-tags { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 2rem; }
+  .tag { font-size: 0.75rem; letter-spacing: 1px; text-transform: uppercase; padding: 0.45rem 1rem; border: 1px solid rgba(245,197,24,0.3); color: var(--gold); font-family: 'Syne', sans-serif; font-weight: 700; transition: background 0.2s; }
+  .tag:hover { background: rgba(245,197,24,0.1); }
+
+  #services { background: #1a1a1a !important; }
+  .services-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5px; margin-top: 3rem; background: #2a2a2a; border: 1.5px solid #2a2a2a; }
+  .service-card { background: #1a1a1a; padding: 3rem 2.5rem; position: relative; overflow: hidden; transition: background 0.3s; }
+  .service-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 0; background: var(--gold); transition: height 0.4s ease; }
+  .service-card:hover { background: #1e1e1e; }
+  .service-card:hover::before { height: 100%; }
+  .service-num { font-family: 'Bebas Neue', sans-serif; font-size: 5rem; color: rgba(245,197,24,0.07); line-height: 1; position: absolute; top: 1rem; right: 1.5rem; }
+  .service-icon { font-size: 2rem; margin-bottom: 1.2rem; }
+  .service-card h3 { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800; margin-bottom: 0.8rem; color: #f0f0f0; }
+  .service-card p { color: rgba(240,240,240,0.55); font-size: 0.9rem; line-height: 1.7; }
+
+  .portfolio-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3rem; }
+  .brands-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: #2a2a2a; border: 1px solid #2a2a2a; }
+  .brand-card { background: #0a0a0a; padding: 3rem 2rem; display: flex; flex-direction: column; gap: 1rem; position: relative; overflow: hidden; transition: background 0.3s; text-decoration: none; }
+  .brand-card:hover { background: #1a1a1a; }
+  .brand-card::after { content: '↗'; position: absolute; top: 1.5rem; right: 1.5rem; color: var(--gold); font-size: 1.2rem; opacity: 0; transition: opacity 0.2s, transform 0.2s; transform: translate(-4px, 4px); }
+  .brand-card:hover::after { opacity: 1; transform: translate(0,0); }
+  .brand-card.no-link { cursor: default; }
+  .brand-card.no-link::after { display: none; }
+  .brand-emoji { font-size: 2.5rem; }
+  .brand-name { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem; color: #f0f0f0; }
+  .brand-role { font-size: 0.8rem; color: var(--gold); letter-spacing: 1px; text-transform: uppercase; }
+  .brand-desc { font-size: 0.85rem; color: rgba(240,240,240,0.5); line-height: 1.6; }
+  .brand-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: auto; }
+  .mini-tag { font-size: 0.65rem; letter-spacing: 1px; text-transform: uppercase; padding: 0.25rem 0.6rem; background: rgba(245,197,24,0.1); color: var(--gold-dim); font-family: 'Syne', sans-serif; font-weight: 700; }
+
+  #videos { background: #1a1a1a !important; }
+  .video-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
+  .video-card { background: #0a0a0a; border: 1px solid #2a2a2a; overflow: hidden; position: relative; transition: border-color 0.3s, transform 0.3s; }
+  .video-card:hover { border-color: var(--gold); transform: translateY(-4px); }
+  .video-thumb { position: relative; width: 100%; padding-bottom: 56.25%; background: #2a2a2a; overflow: hidden; }
+  .video-thumb .play-btn { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.4); transition: background 0.2s; }
+  .video-card:hover .play-btn { background: rgba(0,0,0,0.2); }
+  .play-circle { width: 52px; height: 52px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: transform 0.2s; }
+  .video-card:hover .play-circle { transform: scale(1.1); }
+  .play-circle svg { width: 20px; height: 20px; fill: #0a0a0a; margin-left: 3px; }
+  .video-info { padding: 1.2rem 1.5rem 1.5rem; }
+  .video-category { font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 0.4rem; font-family: 'Syne', sans-serif; font-weight: 700; }
+  .video-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.95rem; color: #f0f0f0; line-height: 1.4; }
+  .video-card a { text-decoration: none; display: block; }
+  .video-card.coming-soon { opacity: 0.4; cursor: default; }
+  .video-card.coming-soon:hover { border-color: #2a2a2a; transform: none; }
+  .video-placeholder { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; }
+  .video-placeholder span { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 2px; color: var(--text-muted); }
+
+  #contact { background: var(--gold) !important; color: #0a0a0a; text-align: center; padding: 7rem 3rem; }
+  #contact .section-label { color: rgba(0,0,0,0.5); }
+  #contact .section-title { color: #0a0a0a; }
+  #contact p { font-size: 1.1rem; max-width: 520px; margin: 0 auto 3rem; opacity: 0.7; line-height: 1.7; color: #0a0a0a; }
+  .contact-links { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; margin-top: 2rem; }
+  .contact-link { display: flex; align-items: center; gap: 0.6rem; background: #0a0a0a; color: #f0f0f0; padding: 0.9rem 2rem; text-decoration: none; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase; transition: background 0.2s, transform 0.2s; clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px)); }
+  .contact-link:hover { background: #1a1a1a; transform: translateY(-2px); }
+  .contact-link svg { width: 18px; height: 18px; }
+
+  footer { background: #0a0a0a; border-top: 1px solid #2a2a2a; padding: 2.5rem 3rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+  footer .logo-foot { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--gold); letter-spacing: 2px; }
+  footer p { font-size: 0.8rem; color: var(--text-muted); }
+  .foot-links { display: flex; gap: 2rem; list-style: none; }
+  .foot-links a { color: var(--text-muted); text-decoration: none; font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase; transition: color 0.2s; }
+  .foot-links a:hover { color: var(--gold); }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  @media (max-width: 900px) {
+    nav { padding: 1.2rem 1.5rem; align-items: flex-start; }
+    .nav-links { display: none; }
+    .nav-menu { display: flex; }
+    section { padding: 5rem 1.5rem; }
+    #hero { padding: 0 1.5rem; }
+    #about { grid-template-columns: 1fr; }
+    .about-visual { height: 300px; }
+    .about-card-main { height: 260px; }
+    .services-grid { grid-template-columns: 1fr; }
+    .brands-grid { grid-template-columns: 1fr 1fr; }
+    .video-grid { grid-template-columns: 1fr 1fr; }
+    .portfolio-header { flex-direction: column; gap: 1rem; align-items: flex-start; }
+    footer { flex-direction: column; text-align: center; }
+    .foot-links { justify-content: center; flex-wrap: wrap; }
+  }
+  @media (max-width: 600px) {
+    nav { padding: 1rem 1.2rem; }
+    .brands-grid { grid-template-columns: 1fr; }
+    .video-grid { grid-template-columns: 1fr; }
+    .contact-links { flex-direction: column; align-items: center; }
+  }
+  @media (hover: none) {
+    body { cursor: auto; }
+    .cursor, .cursor-follower { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursor-follower"></div>
+
+<nav>
+  <a href="#" class="nav-logo">D</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#videos">Videos</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-menu" id="navMenu">
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="mobile-nav" id="mobileNav">
+      <a href="#about" onclick="closeMenu()"><span class="num">01</span> About <span class="line"></span></a>
+      <a href="#services" onclick="closeMenu()"><span class="num">02</span> Services <span class="line"></span></a>
+      <a href="#work" onclick="closeMenu()"><span class="num">03</span> Work <span class="line"></span></a>
+      <a href="#videos" onclick="closeMenu()"><span class="num">04</span> Videos <span class="line"></span></a>
+      <a href="#contact" onclick="closeMenu()"><span class="num">05</span> Contact <span class="line"></span></a>
+    </div>
+  </div>
+</nav>
+
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="coin">🪙</div>
+  <div class="coin">✨</div>
+  <div class="coin">💰</div>
+  <div class="hero-tag">Content Creator &amp; Community Manager</div>
+  <h1 class="hero-headline">ALL THAT<br><span class="gold">GLITTERS</span><br>IS MY X PAGE</h1>
+  <p class="hero-sub">Hire me today so I can turn your project into <span class="highlight">gold.</span></p>
+  <div class="hero-cta-row">
+    <a href="https://twitter.com/damian__web" target="_blank" class="btn-gold">Hire Me →</a>
+    <a href="#work" class="btn-outline">See My Work</a>
+  </div>
+  <div class="hero-scroll">Scroll to explore</div>
+</section>
+
+<div class="marquee-wrap"><div class="marquee-track" id="marquee-track"></div></div>
+
+<section id="about">
+  <div class="about-visual reveal">
+    <div class="about-card about-card-main">
+      <div class="avatar-placeholder">D</div>
+    </div>
+    <div class="about-card about-card-stat">
+      <div class="big">100%</div>
+      <div class="small">Community<br>Focused</div>
+    </div>
+  </div>
+  <div class="about-text reveal">
+    <div class="section-label">Who is Damian?</div>
+    <h2 class="section-title">Built on<br><span style="color:var(--gold)">Vibes &amp;<br>Results</span></h2>
+    <p class="bio-text">I build communities, create content, and make brands impossible to ignore.</p>
+    <div class="skills-tags">
+      <span class="tag">Telegram Mod</span>
+      <span class="tag">Discord Mod</span>
+      <span class="tag">Community Growth</span>
+      <span class="tag">Video Content</span>
+      <span class="tag">Volume Generation</span>
+      <span class="tag">Content Strategy</span>
+      <span class="tag">Moderation</span>
+      <span class="tag">X / Twitter</span>
+    </div>
+    <div style="margin-top:2.5rem;">
+      <a href="https://twitter.com/damian__web" target="_blank" class="btn-gold">Work with me →</a>
+    </div>
+  </div>
+</section>
+
+<section id="services">
+  <div class="reveal">
+    <div class="section-label">What I Do</div>
+    <h2 class="section-title">Turning <span style="color:var(--gold)">Ideas<br>Into Gold</span></h2>
+  </div>
+  <div class="services-grid reveal">
+    <div class="service-card">
+      <div class="service-num">01</div>
+      <div class="service-icon">🧑‍💻</div>
+      <h3>Community Management</h3>
+      <p>I moderate and grow Telegram &amp; Discord communities — keeping engagement high, vibes good, and spam far away. Your community deserves a real human touch.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-num">02</div>
+      <div class="service-icon">📈</div>
+      <h3>Community Growth</h3>
+      <p>From zero to a thriving hub — I build organic growth strategies that bring the right people in and make them stay. Growth that actually converts.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-num">03</div>
+      <div class="service-icon">🎬</div>
+      <h3>Video Content Creation</h3>
+      <p>Engaging, scroll-stopping video content tailored for your brand and audience. From concept to delivery — I handle it all.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-num">04</div>
+      <div class="service-icon">🔥</div>
+      <h3>Volume Generation</h3>
+      <p>Need traction? I generate real volume and on-chain/off-chain activity to put your project on the map and get people talking.</p>
+    </div>
+  </div>
+</section>
+
+<section id="work">
+  <div class="portfolio-header reveal">
+    <div>
+      <div class="section-label">Portfolio</div>
+      <h2 class="section-title">Brands I've<br><span style="color:var(--gold)">Worked With</span></h2>
+    </div>
+    <a href="https://twitter.com/damian__web" target="_blank" class="btn-outline" style="flex-shrink:0;">Let's Collaborate →</a>
+  </div>
+  <div class="brands-grid reveal">
+    <a class="brand-card" href="https://x.com/damian__web/status/2012196163231842767" target="_blank">
+      <div class="brand-emoji">🎟️</div>
+      <div class="brand-name">Raffledotsol</div>
+      <div class="brand-role">Content Creator</div>
+      <div class="brand-desc">Crafted content that helped them raise $440k from their sale.</div>
+      <div class="brand-tags"><span class="mini-tag">Twitter</span></div>
+    </a>
+    <a class="brand-card" href="https://x.com/damian__web/status/2011071440670380101" target="_blank">
+      <div class="brand-emoji">🏀</div>
+      <div class="brand-name">BALLN Token</div>
+      <div class="brand-role">Community Manager</div>
+      <div class="brand-desc">Managed BALLN's Telegram community for nearly a year — from 2024 to late 2025, keeping the community active, engaged and growing.</div>
+      <div class="brand-tags"><span class="mini-tag">Telegram</span><span class="mini-tag">Twitter</span></div>
+    </a>
+    <div class="brand-card no-link">
+      <div class="brand-emoji">⚡</div>
+      <div class="brand-name">Coming Soon</div>
+      <div class="brand-role">—</div>
+      <div class="brand-desc">More work being added here soon.</div>
+      <div class="brand-tags"><span class="mini-tag">TBA</span></div>
+    </div>
+    <div class="brand-card no-link">
+      <div class="brand-emoji">🌐</div>
+      <div class="brand-name">Coming Soon</div>
+      <div class="brand-role">—</div>
+      <div class="brand-desc">More work being added here soon.</div>
+      <div class="brand-tags"><span class="mini-tag">TBA</span></div>
+    </div>
+    <div class="brand-card no-link">
+      <div class="brand-emoji">🎯</div>
+      <div class="brand-name">Coming Soon</div>
+      <div class="brand-role">—</div>
+      <div class="brand-desc">More work being added here soon.</div>
+      <div class="brand-tags"><span class="mini-tag">TBA</span></div>
+    </div>
+    <div class="brand-card no-link">
+      <div class="brand-emoji">✨</div>
+      <div class="brand-name">Your Project?</div>
+      <div class="brand-role">Let's Work</div>
+      <div class="brand-desc">I'm always open to exciting new projects. Hit me up and let's build something gold together.</div>
+      <div class="brand-tags"><span class="mini-tag">Available</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="videos">
+  <div class="reveal">
+    <div class="section-label">Video Content</div>
+    <h2 class="section-title">Watch My<br><span style="color:var(--gold)">Work In<br>Action</span></h2>
+  </div>
+  <div class="video-grid reveal">
+    <div class="video-card">
+      <a href="https://x.com/damian__web/status/2024044830922318327" target="_blank">
+        <div class="video-thumb">
+          <div class="play-btn">
+            <div class="play-circle">
+              <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="video-info">
+          <div class="video-category">Funny Content</div>
+          <div class="video-title">Random Funny Content 😂</div>
+        </div>
+      </a>
+    </div>
+    <div class="video-card coming-soon">
+      <div class="video-thumb"><div class="video-placeholder"><span style="font-size:2rem;">🎬</span><span>Coming Soon</span></div></div>
+      <div class="video-info"><div class="video-category">TBA</div><div class="video-title">More content dropping soon...</div></div>
+    </div>
+    <div class="video-card coming-soon">
+      <div class="video-thumb"><div class="video-placeholder"><span style="font-size:2rem;">🎬</span><span>Coming Soon</span></div></div>
+      <div class="video-info"><div class="video-category">TBA</div><div class="video-title">More content dropping soon...</div></div>
+    </div>
+    <div class="video-card coming-soon">
+      <div class="video-thumb"><div class="video-placeholder"><span style="font-size:2rem;">🎬</span><span>Coming Soon</span></div></div>
+      <div class="video-info"><div class="video-category">TBA</div><div class="video-title">More content dropping soon...</div></div>
+    </div>
+    <div class="video-card coming-soon">
+      <div class="video-thumb"><div class="video-placeholder"><span style="font-size:2rem;">🎬</span><span>Coming Soon</span></div></div>
+      <div class="video-info"><div class="video-category">TBA</div><div class="video-title">More content dropping soon...</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="reveal">
+    <div class="section-label">Let's Talk</div>
+    <h2 class="section-title" style="font-size:clamp(2.5rem,6vw,5rem);">Ready to Go<br>Gold? 🏆</h2>
+    <p>I'm looking for exciting projects that need a real community-first approach. If you want someone who delivers results AND good vibes — I'm your guy.</p>
+    <a href="https://twitter.com/damian__web" target="_blank" class="btn-gold">Contact Me →</a>
+    <div class="contact-links">
+      <a href="mailto:oludegbeopemipo@gmail.com" class="contact-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
+        Email Me
+      </a>
+      <a href="https://twitter.com/damian__web" target="_blank" class="contact-link">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        @damian__web
+      </a>
+      <a href="https://wa.me/2348132465269" target="_blank" class="contact-link">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        WhatsApp
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="logo-foot">Damian</div>
+  <p>© 2025 Damian — Content Creator &amp; Community Manager</p>
+  <ul class="foot-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#videos">Videos</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</footer>
+
+<script>
+  const cursor = document.getElementById('cursor');
+  const follower = document.getElementById('cursor-follower');
+  let mx = 0, my = 0, fx = 0, fy = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cursor.style.left = mx+'px'; cursor.style.top = my+'px'; });
+  function animFollower() { fx += (mx-fx)*0.12; fy += (my-fy)*0.12; follower.style.left = fx+'px'; follower.style.top = fy+'px'; requestAnimationFrame(animFollower); }
+  animFollower();
+
+  const hamburger = document.getElementById('hamburger');
+  const mobileNav = document.getElementById('mobileNav');
+  function closeMenu() { mobileNav.classList.remove('open'); hamburger.classList.remove('open'); }
+  hamburger.addEventListener('click', () => { mobileNav.classList.toggle('open'); hamburger.classList.toggle('open'); });
+  document.addEventListener('click', e => { if (!document.getElementById('navMenu').contains(e.target)) closeMenu(); });
+
+  const track = document.getElementById('marquee-track');
+  const items = ['Community Manager','✦','Content Creator','✦','Telegram','✦','Discord','✦','Video Content','✦','Volume Generation','✦','Web3','✦','Growth Hacker','✦'];
+  const html = items.map(i => '<span class="marquee-item">'+(i==='✦'?'<span>'+i+'</span>':i)+'</span>').join('');
+  track.innerHTML = html + html;
+
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((e,i) => { if(e.isIntersecting){ setTimeout(()=>e.target.classList.add('visible'),i*80); observer.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
